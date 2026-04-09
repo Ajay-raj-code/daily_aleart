@@ -4,6 +4,9 @@ from bs4 import BeautifulSoup
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from flask import Flask
+import threading
+
 def send_mail():
     me = "ajay.raj.635p@gmail.com"
     you = "ajayraj.code@gmail.com"
@@ -111,7 +114,7 @@ def send_mail():
     try:
         # Use 'with' to ensure the connection closes properly
         with smtplib.SMTP('smtp.gmail.com', 587) as server:
-            server.set_debuglevel(1) # This will show you the "chat" between Python and Google
+            server.set_debuglevel(0) # This will show you the "chat" between Python and Google
             server.starttls() 
             server.login(me, "nikn dgxq qmqh raal")
             server.sendmail(me, you, msg.as_string())
@@ -146,8 +149,22 @@ def scrape():
     except requests.exceptions.RequestException as e:
         print(f"An error occurred: {e}")
 
-while True:
-    scrape()
-    time.sleep(30)  # Wait for 1 hour before the next scrape
+if __name__ == "__main__":
 
 
+    app = Flask('')
+
+    @app.route('/')
+    def home():
+        return "I am alive!"
+
+    def run_web_server():
+        app.run(host='0.0.0.0', port=10000, debug=False)
+
+    # Start the web server in a separate thread
+    threading.Thread(target=run_web_server).start()
+
+    # Now start your loop
+    while True:
+        scrape()
+        time.sleep(300)
