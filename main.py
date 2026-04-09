@@ -134,7 +134,7 @@ def scrape():
         soup = BeautifulSoup(respons.text, 'html.parser')
         if respons.status_code == 200:
             print("Scraping successful!")
-            bsc_links = soup.find_all('a', string=lambda text: 'B.Sc' in str(text))
+            bsc_links = soup.find_all('a', string=lambda text: 'B.C.A.' in str(text))
             print(f"Found {bsc_links} B.C.A. links.")
             if bsc_links:
                 print("B.C.A. link is avilable")
@@ -161,7 +161,7 @@ def scrape_loop():
             scrape() # Your existing function
         except Exception as e:
             print(f"Scrape Error: {e}")
-        time.sleep(300)
+        time.sleep(1800)
 
 # Start the background thread OUTSIDE the __main__ block
 # This ensures it starts even when Gunicorn runs the file
