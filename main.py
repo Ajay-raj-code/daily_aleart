@@ -149,22 +149,24 @@ def scrape():
     except requests.exceptions.RequestException as e:
         print(f"An error occurred: {e}")
 
-if __name__ == "__main__":
+app = Flask(__name__)
 
+@app.route('/')
+def home():
+    return "The scraper is running!"
 
-    app = Flask('')
-
-    @app.route('/')
-    def home():
-        return "I am alive!"
-
-    def run_web_server():
-        app.run(host='0.0.0.0', port=10000, debug=False)
-
-    # Start the web server in a separate thread
-    threading.Thread(target=run_web_server).start()
-
-    # Now start your loop
+def scrape_loop():
     while True:
-        scrape()
+        try:
+            scrape() # Your existing function
+        except Exception as e:
+            print(f"Scrape Error: {e}")
         time.sleep(300)
+
+# Start the background thread OUTSIDE the __main__ block
+# This ensures it starts even when Gunicorn runs the file
+threading.Thread(target=scrape_loop, daemon=True).start()
+
+if __name__ == "__main__":
+    # This part only runs when you run 'python main.py' locally
+    app.run(host='0.0.0.0', port=10000, debug=False)
